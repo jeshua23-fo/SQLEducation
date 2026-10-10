@@ -13,14 +13,16 @@ Express API backed by Supabase Auth and PostgreSQL.
 1. Copy `.env.example` to `.env`.
 2. Fill in the environment variables from your Supabase project settings.
 3. Keep `SUPABASE_SERVICE_ROLE_KEY` exclusively in this server-side `.env`. Never put it in browser JavaScript, commit it, or share it in chat.
-4. Run `npm install`.
-5. Run `npm run dev`.
+4. Run `npm install` inside `backend/`.
+5. Run `npm run dev` inside `backend/`.
 6. Check `GET http://localhost:3000/api/health`.
+7. Serve the frontend from a local web server such as VS Code Live Server. The login page defaults to `http://localhost:3000` for its API. To override that, define `window.SQLEDUCATION_API_URL` before `js/login.js` loads.
 
 ## Authentication
 
 - `POST /api/auth/login`: body `{ "user": "username-or-email", "pass": "password" }`.
 - `GET /api/auth/me`: requires `Authorization: Bearer <access-token>`.
+- The login page now calls the real API and saves the returned access token in its browser session record. Token refresh is not implemented yet.
 
 There is deliberately no public student sign-up endpoint.
 
@@ -37,8 +39,8 @@ Student accounts without a real email use an internal `.invalid` email identifie
 
 ## First administrator setup
 
-Create the first administrator in a controlled setup step: create an Auth user in the Supabase dashboard, insert a matching `public.users` profile with a unique lowercase username and `role = 'admin'`, then sign in and use the resulting access token for administrator endpoints. Never make a public endpoint that lets someone assign themselves the admin role.
+Follow [ADMIN_SETUP.md](./ADMIN_SETUP.md) to create the first trusted administrator manually in the Supabase dashboard. Never make a public endpoint that lets someone assign themselves the admin role.
 
 ## Current limitations
 
-The backend and endpoints are not deployed yet. The existing browser login page has not been connected to these endpoints. Student creation, lesson assignment, exercise evaluation, token refresh, and the admin interface still require local integration and end-to-end tests.
+The API and login integration are committed to this feature branch but are not deployed and have not been tested end-to-end against your local environment. The student-management endpoints exist, but the admin interface, lesson assignment UI, student learning APIs, SQL execution sandbox, and token refresh still need implementation and testing.
