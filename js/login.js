@@ -2,30 +2,62 @@
 const $ = s => document.querySelector(s);
 const SESSION_KEY = 'sqlx-session';
 const HOME = 'index.html';
+const API_BASE = (window.SQLEDUCATION_API_URL || 'http://localhost:3000').replace(/\/+$/, '');
 
-/* Si ya hay sesión, ir directo al panel */
-try { if (localStorage.getItem(SESSION_KEY)) location.replace(HOME); } catch { /* sin almacenamiento */ }
+/* Comprueba una sesión guardada con el backend antes de reutilizarla. */
+(async function restoreSession() {
+  let session;
+  try {
+    session = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+  } catch {
+    session = null;
+  }
+  if (!session?.token) {
+    try { localStorage.removeItem(SESSION_KEY); } catch { /* sin almacenamiento */ }
+    return;
+  }
 
-/* ============================================================
-   CONEXIÓN CON EL BACK-END
-   Reemplaza el cuerpo de authenticate() por tu llamada real.
-   Debe devolver { ok: true, user: {...}, token } o lanzar un Error
-   con el mensaje que se mostrará al usuario.
-   Mientras no exista back-end, acepta cualquier credencial válida.
-   ============================================================ */
+  try {
+    const response = await fetch(`${API_BASE}/api/auth/me`, {
+      headers: { Authorization: `Bearer ${session.token}` }
+    });
+    if (!response.ok) throw new Error('La sesión ha caducado.');
+    const data = await response.json();
+    const refreshed = { ...session, user: data.user };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(refreshed));
+    location.replace(HOME);
+  } catch {
+    try { localStorage.removeItem(SESSION_KEY); } catch { /* sin almacenamiento */ }
+  }
+})();
+
+/* Autenticación real contra la API Express. */
 async function authenticate(user, pass) {
-  /* Ejemplo:
-  const res = await fetch('/api/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user, pass })
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'Usuario o contraseña incorrectos.');
+  let response;
+  try {
+    response = await fetch(`${API_BASE}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user, pass })
+    });
+  } catch {
+    throw new Error('No se puede conectar con el servidor. Comprueba que el backend esté iniciado.');
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch {
+    throw new Error('El servidor devolvió una respuesta no válida.');
+  }
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Usuario o contraseña incorrectos.');
+  }
+  if (!data.token || !data.user) {
+    throw new Error('El servidor no devolvió una sesión válida.');
+  }
   return data;
-  */
-  await new Promise(r => setTimeout(r, 700));
-  return { ok: true, user: { name: user }, token: null };
 }
 
 /* ---------- Validación ---------- */
@@ -71,7 +103,14 @@ $('#form').addEventListener('submit', async e => {
   const btn = $('#submit'); btn.disabled = true; btn.classList.add('load'); $('#alert').hidden = true;
   try {
     const res = await authenticate(user, pass);
-    try { localStorage.setItem(SESSION_KEY, JSON.stringify({ user: res.user, token: res.token, at: Date.now() })); } catch { /* ignorar */ }
+    const session = {
+      user: res.user,
+      token: res.token,
+      refreshToken: res.refreshToken,
+      expiresAt: res.expiresAt,
+      at: Date.now()
+    };
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
     location.replace(HOME);
   } catch (err) {
     $('#alert').textContent = err.message || 'No se pudo iniciar sesión. Inténtalo de nuevo.';
