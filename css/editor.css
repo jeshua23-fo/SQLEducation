@@ -73,8 +73,8 @@
 	margin-top: 10px;
 	padding: 10px 14px;
 	border-radius: 10px;
-	background: #fef9c3;
-	color: #713f12;
+	background: #fff7d6;
+	color: #854d0e;
 }
 .lbl {
 	margin: 22px 0 10px;
@@ -179,15 +179,19 @@ textarea {
 	padding: 11px 22px;
 	border: 0;
 	border-radius: 12px;
-	background: linear-gradient(90deg, #f43f5e, #f97316);
+	background: var(--c2);
 	color: #fff;
 	font-weight: 700;
-	transition: transform 0.18s ease, filter 0.18s ease;
+	box-shadow: 0 6px 16px rgba(53, 111, 229, 0.22);
+	transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
 }
 .run:hover {
 	transform: translateY(-2px);
-	filter: brightness(1.05);
+	filter: brightness(1.06);
+	box-shadow: 0 9px 20px rgba(53, 111, 229, 0.28);
 }
+.run:focus-visible { outline: 3px solid var(--c1); outline-offset: 3px; }
+.run:active { transform: translateY(0); }
 .run small { margin-left: 6px; opacity: 0.8; font-weight: 500; }
 .tbl-wrap {
 	overflow-x: auto;
@@ -237,4 +241,29 @@ textarea {
 	.ed-grid { grid-template-columns: 1fr; }
 	.top > .btn { margin-left: auto; }
 	.ed-page { width: min(100% - 32px, 1140px); }
+}
+
+/* Ajustes responsive del editor */
+.ed-bar { flex-wrap: wrap; gap: 10px; }
+.ed-bar .btn { min-width: 0; }
+.tables { min-width: 0; }
+.tb li { gap: 8px; overflow-wrap: anywhere; }
+.ed-body { overscroll-behavior: contain; }
+.tbl-wrap th, .tbl-wrap td { padding: 11px 14px; }
+.success { flex-wrap: wrap; }
+@media (max-width: 520px) {
+  .ed-page { width: calc(100% - 24px); margin: 18px auto; }
+  .ed-bar { display: grid; grid-template-columns: 1fr 1fr; }
+  .ed-bar .btn { justify-content: center; padding: 9px 10px; font-size: 13px; }
+  .ed-grid { gap: 14px; }
+  .mission { padding: 16px; }
+  .ed-top { flex-wrap: wrap; }
+  .eng { width: 100%; margin-left: 0; }
+  .gutter, .hl, textarea { font-size: 13px; }
+  .gutter { width: 38px; }
+  .run { right: 10px; bottom: 10px; padding: 10px 14px; }
+  .run small { display: none; }
+  .lbl { align-items: flex-start; flex-wrap: wrap; gap: 8px; }
+  .success { align-items: flex-start; padding: 14px; }
+  .success .btn { width: 100%; justify-content: center; }
 }
