@@ -463,7 +463,9 @@ grant select on public.users, public.courses, public.lessons,
     public.daily_challenges, public.submissions, public.streaks,
     public.daily_activity to authenticated;
 
+grant insert, update on public.users to authenticated;
 grant insert, update on public.lesson_progress to authenticated;
+grant select on public.courses to anon;
 grant select on public.projects, public.comments to anon, authenticated;
 grant insert, update, delete on public.projects, public.comments to authenticated;
 grant usage, select on sequence public.projects_id_seq, public.comments_id_seq to authenticated;
