@@ -1,33 +1,44 @@
-# SQLEducation API
+# SQLEducation backend
 
-Initial Express API for SQLEducation. It currently provides a health check and Supabase-backed login/current-user endpoints.
+Express API backed by Supabase Auth and PostgreSQL.
 
 ## Requirements
 
 - Node.js 20 or newer
-- A Supabase project with the SQLEducation schema already applied
+- A Supabase project
+- The project's Supabase URL, anon/publishable key, and service-role/secret key
 
 ## Local setup
 
-1. Open a terminal in the `backend` directory.
-2. Install dependencies with `npm install`.
-3. Copy `.env.example` to `.env`.
-4. Fill in the Supabase project URL, anon/publishable key, and service-role key.
-5. Set `FRONTEND_ORIGIN` to the exact origin serving the frontend.
-6. Run `npm run dev`.
-7. Visit `http://localhost:3000/api/health`.
+1. Copy `.env.example` to `.env`.
+2. Fill in the environment variables from your Supabase project settings.
+3. Keep `SUPABASE_SERVICE_ROLE_KEY` exclusively in this server-side `.env`. Never put it in browser JavaScript, commit it, or share it in chat.
+4. Run `npm install`.
+5. Run `npm run dev`.
+6. Check `GET http://localhost:3000/api/health`.
 
-## Environment security
+## Authentication
 
-- Keep `.env` out of Git.
-- The service-role key is server-only and bypasses Row Level Security. Never use it in browser JavaScript, HTML, or a public repository.
-- Use a separate development/test project before production.
-- Login is limited to 10 attempts per IP per 15 minutes; production deployments should also use platform-level rate limits and monitoring.
-
-## Current endpoints
-
-- `GET /api/health`: process health.
-- `POST /api/auth/login`: accepts JSON `{ "user": "email-or-username", "pass": "password" }`.
+- `POST /api/auth/login`: body `{ "user": "username-or-email", "pass": "password" }`.
 - `GET /api/auth/me`: requires `Authorization: Bearer <access-token>`.
 
-Registration, profile creation on signup, refresh-token handling, and frontend integration are not implemented yet.
+There is deliberately no public student sign-up endpoint.
+
+## Administrator endpoints
+
+All `/api/admin/*` endpoints require a valid Supabase access token whose `public.users.role` is `admin`.
+
+- `GET /api/admin/students`: list students.
+- `POST /api/admin/students`: create a student using `{ "username": "...", "display_name": "...", "password": "..." }`.
+- `POST /api/admin/students/:id/reset-password`: set a new password using `{ "password": "..." }`.
+- `POST /api/admin/students/:id/access`: enable or suspend login using `{ "enabled": true }` or `false`.
+
+Student accounts without a real email use an internal `.invalid` email identifier because Supabase password authentication uses an email/phone identifier. The app never sends email to that reserved address; students sign in with their username through the API.
+
+## First administrator setup
+
+Create the first administrator in a controlled setup step: create an Auth user in the Supabase dashboard, insert a matching `public.users` profile with a unique lowercase username and `role = 'admin'`, then sign in and use the resulting access token for administrator endpoints. Never make a public endpoint that lets someone assign themselves the admin role.
+
+## Current limitations
+
+The backend and endpoints are not deployed yet. The existing browser login page has not been connected to these endpoints. Student creation, lesson assignment, exercise evaluation, token refresh, and the admin interface still require local integration and end-to-end tests.
