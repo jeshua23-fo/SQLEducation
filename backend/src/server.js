@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import healthRouter from './routes/health.js';
 import authRouter from './routes/auth.js';
+import adminRouter from './routes/admin.js';
 
 // Importing this module validates the required Supabase environment variables.
 import './config/supabase.js';
@@ -34,6 +35,7 @@ app.get('/', (_req, res) => {
 
 app.use('/api/health', healthRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/admin', adminRouter);
 
 app.use((_req, res) => {
   res.status(404).json({ message: 'Ruta no encontrada.' });
