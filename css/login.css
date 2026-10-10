@@ -1,4 +1,4 @@
-:root{--ink:#0f172a;--mut:#64748b;--line:#dfe6f1;--c1:#14b8a6;--c2:#0ea5e9;--blue:#2563eb}
+:root{--bg:#f4f7fb;--card:#fff;--ink:#1e293b;--mut:#64748b;--line:#e2e8f0;--c1:#4f8cff;--c2:#356fe5;--blue:#356fe5}
 *{box-sizing:border-box;margin:0}
 html,body{height:100%}
 body{font:500 16px/1.4 'Outfit',system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
@@ -11,11 +11,11 @@ body{font:500 16px/1.4 'Outfit',system-ui,sans-serif;color:var(--ink);-webkit-fo
     linear-gradient(90deg,rgba(255,255,255,.28) 1px,transparent 1px) 0 0/56px 56px,
     linear-gradient(135deg,#c9eef3,#a9c8e8 55%,#dbeafe)}
 .card{width:min(100%,420px);padding:32px 32px 30px;background:rgba(255,255,255,.88);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.9);border-radius:28px;box-shadow:0 24px 60px rgba(30,64,120,.18)}
-.logo{width:54px;height:54px;margin:0 auto 14px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#0ea5e9,var(--blue));box-shadow:0 8px 20px rgba(37,99,235,.35)}
+.logo{width:54px;height:54px;margin:0 auto 14px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,#4f8cff,var(--blue));box-shadow:0 8px 20px rgba(37,99,235,.35)}
 h1{text-align:center;font-size:27px;font-weight:800;letter-spacing:-.01em;margin-bottom:26px}
 .lbl{display:block;font:700 13px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#475569;margin-bottom:8px}
 .field{position:relative;display:flex;align-items:center;height:44px;padding:0 14px;gap:12px;background:#f8fafc;border:1px solid var(--line);border-radius:12px;color:#94a3b8;transition:border-color .15s,box-shadow .15s}
-.field:focus-within{border-color:var(--c2);box-shadow:0 0 0 4px rgba(14,165,233,.15);background:#fff}
+.field:focus-within{border-color:var(--c2);box-shadow:0 0 0 4px rgba(79,140,255,.16);background:#fff}
 .field input{flex:1;min-width:0;height:100%;border:0;background:none;font:500 15px 'Outfit',sans-serif;color:var(--ink);outline:0}
 .field input::placeholder{color:#64748b}
 .field.bad{border-color:#ef4444;box-shadow:0 0 0 4px rgba(239,68,68,.12)}
@@ -24,7 +24,7 @@ h1{text-align:center;font-size:27px;font-weight:800;letter-spacing:-.01em;margin
 .eye .slash{display:none}.eye[aria-pressed=true] .slash{display:block}
 .err{min-height:20px;margin:4px 2px 8px;font-size:13px;color:#dc2626}
 .alert{margin-bottom:14px;padding:10px 14px;border-radius:12px;background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;font-size:14px}
-.submit{width:100%;height:52px;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:14px;cursor:pointer;color:#fff;font:700 15px 'Outfit',sans-serif;letter-spacing:.03em;text-transform:uppercase;background:linear-gradient(90deg,var(--c1),var(--c2));box-shadow:0 8px 18px rgba(14,165,233,.3);transition:filter .15s,transform .15s}
+.submit{width:100%;height:52px;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:14px;cursor:pointer;color:#fff;font:700 15px 'Outfit',sans-serif;letter-spacing:.03em;text-transform:uppercase;background:var(--c2);box-shadow:0 8px 18px rgba(53,111,229,.22);transition:filter .15s,transform .15s}
 .submit:hover{filter:brightness(1.06)}.submit:active{transform:translateY(1px)}
 .submit[disabled]{opacity:.8;cursor:progress}
 .submit.load svg{display:none}
@@ -34,3 +34,9 @@ h1{text-align:center;font-size:27px;font-weight:800;letter-spacing:-.01em;margin
 @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 @media(max-width:420px){.card{padding:26px 20px}}
+
+
+/* Accesibilidad y pantallas estrechas */
+.field input:focus-visible, .eye:focus-visible, .submit:focus-visible { outline: 3px solid var(--c1); outline-offset: 3px; }
+.submit { text-transform: none; letter-spacing: 0; }
+@media (max-width: 360px) { .stage { padding: 14px; } .card { padding: 24px 18px; border-radius: 20px; } h1 { font-size: 24px; } }

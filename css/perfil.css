@@ -80,6 +80,7 @@
 }
 
 .online {
+	display: none; /* No mostrar estado de conexión sin presencia en tiempo real. */
 	position: absolute;
 	right: 8px;
 	bottom: 8px;
@@ -393,4 +394,21 @@ hr {
 	.two-f {
 		grid-template-columns: 1fr;
 	}
+}
+
+/* Detalles de accesibilidad y distribución */
+.profile-page .btn { white-space: nowrap; }
+.profile-page label input::placeholder { color: var(--mut); opacity: 1; }
+.profile-page .pre:focus-within { outline-offset: 2px; }
+@media (max-width: 520px) {
+  .profile-page { width: calc(100% - 24px); margin: 18px auto; }
+  .profile-page .sec-head.between { gap: 12px; flex-direction: column; }
+  .prof-grid { gap: 16px; margin-top: 18px; }
+  .form { padding: 18px; }
+  .top-row { flex-direction: column; }
+  .top-row .chip { align-self: flex-start; }
+  .panel { padding: 14px; }
+  .pre i { padding-left: 9px; font-size: 11px; }
+  .actions { flex-direction: column-reverse; }
+  .actions .btn { width: 100%; justify-content: center; }
 }
