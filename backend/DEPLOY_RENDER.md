@@ -20,4 +20,10 @@ The repository includes a `render.yaml` blueprint for the Express API. This file
 - Do not set `FRONTEND_ORIGIN` to `*`; use only the real frontend origin(s).
 - The API is not considered production-ready until a trusted administrator has been bootstrapped using [ADMIN_SETUP.md](./ADMIN_SETUP.md) and login/admin flows have been tested.
 - The SQL editor endpoint / student SQL execution sandbox has not been implemented. Do not connect untrusted student SQL to the production Supabase database.
-- After deployment, configure the frontend's `window.SQLEDUCATION_API_URL` to the actual API origin before `js/login.js` loads. Do not guess the service URL; copy the URL assigned by Render.
+- After deployment, open `login.html` and add this before the `<script src="js/login.js"></script>` tag, replacing the example with the actual URL assigned by Render:
+
+```html
+<script>window.SQLEDUCATION_API_URL = "https://YOUR-SERVICE.onrender.com";</script>
+```
+
+Do not guess the service URL; copy the URL assigned by Render.
