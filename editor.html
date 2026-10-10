@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor SQL | SQL Explorers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/principal.css">
+  <link rel="stylesheet" href="css/editor.css">
+</head>
+<body>
+  <header class="top">
+    <a class="icon-btn logo" href="index.html" aria-label="Inicio">🗄️</a>
+    <div class="editor-brand">
+      <b>SQL Explorers</b>
+      <small>Editor interactivo</small>
+    </div>
+    <a class="btn small ghost" href="index.html">‹ Volver al inicio</a>
+    <button class="icon-btn" id="themeBtn" aria-label="Cambiar tema">🌙</button>
+  </header>
+
+  <main class="ed-page">
+    <section class="view on" id="v-clases">
+      <div class="ed-bar">
+        <a class="btn small ghost" href="index.html">‹ Volver a clases</a>
+        <button class="btn small ghost" id="prevEx">« Ejercicio anterior</button>
+      </div>
+
+      <div class="ed-grid">
+        <aside class="tables card">
+          <h4 class="mono">🗄️ Tablas SQL</h4>
+          <div id="schema"></div>
+        </aside>
+
+        <div class="ed-main">
+          <div class="card mission">
+            <div class="row">
+              <span class="chip" id="exTag">Ejercicio 1</span>
+              <span class="diff">Dificultad: <b id="exDiff">Principiante</b></span>
+            </div>
+            <p id="exMission"></p>
+            <button class="btn small ghost" id="hintBtn">💡 Pista</button>
+            <p class="hint" id="hint" hidden></p>
+          </div>
+
+          <div class="row lbl">
+            <span><b class="mono">Código</b> · Escribe o edita la consulta abajo</span>
+            <span>
+              <button class="link" id="resetBtn">↻ Reiniciar</button>
+              <button class="link" id="fmtBtn">Formatear SQL</button>
+            </span>
+          </div>
+
+          <div class="editor">
+            <div class="ed-top">
+              <i class="d r"></i>
+              <i class="d y"></i>
+              <i class="d g"></i>
+              <span class="file mono" id="fileName">consulta.sql</span>
+              <span class="mono eng">Motor: SQLite 3 · UTF-8</span>
+            </div>
+            <div class="ed-body">
+              <div class="gutter mono" id="gutter" aria-hidden="true"></div>
+              <div class="code-wrap">
+                <pre class="mono hl" id="hl" aria-hidden="true"></pre>
+                <textarea class="mono" id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editor de código SQL"></textarea>
+              </div>
+            </div>
+            <button class="run" id="runBtn">▶ Ejecutar <small>Ctrl+Enter</small></button>
+          </div>
+
+          <div class="row lbl">
+            <span><b class="mono">Resultado</b> <span class="chip ok" id="resInfo">Aún sin ejecutar</span></span>
+            <button class="link" id="csvBtn">⤓ Exportar CSV</button>
+          </div>
+          <div class="tbl-wrap" id="result">
+            <p class="empty">Escribe una consulta y presiona Ejecutar para ver los datos.</p>
+          </div>
+          <div class="success" id="success" hidden>
+            <span>🎉</span>
+            <div>
+              <b>¡Reto superado con éxito!</b>
+              <br>
+              <small id="okMsg"></small>
+            </div>
+            <button class="btn green" id="nextEx">Siguiente ejercicio →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>● Módulo de aprendizaje activo</span>
+    <span>© 2025 SQL Explorers Inc. Todos los derechos reservados.</span>
+  </footer>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="js/ejercicios.js"></script>
+  <script src="js/editor.js"></script>
+</body>
+</html>

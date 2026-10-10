@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi perfil | SQL Explorers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/principal.css">
+  <link rel="stylesheet" href="css/perfil.css">
+</head>
+<body>
+  <header class="top">
+    <a class="icon-btn logo" href="index.html" aria-label="Inicio">🗄️</a>
+    <div class="profile-brand">
+      <b>SQL Explorers</b>
+      <small>Mi perfil</small>
+    </div>
+    <a class="btn small ghost" href="index.html">‹ Volver al inicio</a>
+    <button class="icon-btn" id="themeBtn" aria-label="Cambiar tema">🌙</button>
+  </header>
+
+  <main class="profile-page">
+    <section class="view on">
+      <div class="sec-head between">
+        <div>
+          <h1 class="h-page">Mi perfil</h1>
+          <p class="sub">Gestiona tus datos personales y tu presencia en la comunidad SQL Explorers.</p>
+        </div>
+        <a class="btn small ghost" href="index.html">← Volver al panel</a>
+      </div>
+
+      <div class="prof-grid">
+        <aside class="card about">
+          <div class="big-av">
+            <img id="pAvatar" alt="Foto de perfil">
+            <i class="online"></i>
+          </div>
+          <h3>Acerca de mí</h3>
+          <span class="chip c" id="pBadge">Completa tu perfil</span>
+          <dl>
+            <div><dt>Nombre</dt><dd id="sNombre">—</dd></div>
+            <div><dt>Apellido</dt><dd id="sApellido">—</dd></div>
+            <div><dt>Edad</dt><dd id="sEdad">—</dd></div>
+          </dl>
+          <dt class="b">Afición</dt>
+          <div class="box" id="sAficion">—</div>
+          <hr>
+          <dt class="b">Racha</dt>
+          <div class="streak-box">
+            🔥
+            <div>
+              <b><span class="streak">0</span> días de racha</b>
+              <br>
+              <small>¡Imparable resolviendo consultas!</small>
+            </div>
+          </div>
+          <hr>
+          <dt class="b">Redes sociales</dt>
+          <div id="sSocial"></div>
+        </aside>
+
+        <form class="card form" id="profForm" novalidate>
+          <div class="row top-row">
+            <div>
+              <h2>Editar datos del perfil</h2>
+              <p class="sub">Actualiza tu foto e información personal visible para tus compañeros y profesores.</p>
+            </div>
+            <span class="chip ok">● Modo edición</span>
+          </div>
+
+          <div class="panel up">
+            <label class="upload" for="file">
+              <img id="fAvatar" alt="">
+              <span>📷<br>Subir foto</span>
+            </label>
+            <input type="file" id="file" accept="image/png,image/jpeg" hidden>
+            <small>PNG, JPG hasta 5 MB</small>
+            <div class="fields">
+              <label>Nombre<input id="nombre" required maxlength="30" autocomplete="given-name"><em></em></label>
+              <label>Apellido<input id="apellido" required maxlength="30" autocomplete="family-name"><em></em></label>
+            </div>
+          </div>
+
+          <div class="two-f">
+            <label>Edad<input id="edad" type="number" min="9" max="16" inputmode="numeric" placeholder="9 a 16"><em></em></label>
+            <label>Afición<input id="aficion" maxlength="60" placeholder="Ej: programación y videojuegos"><em></em></label>
+          </div>
+
+          <h4 class="sep">Perfiles y redes sociales</h4>
+          <label>Instagram<span class="pre"><i>instagram.com/</i><input id="ig" placeholder="tu_usuario"></span></label>
+          <label>TikTok<span class="pre"><i>tiktok.com/@</i><input id="tt" placeholder="tu_usuario"></span></label>
+          <label>YouTube<span class="pre"><i>youtube.com/@</i><input id="yt" placeholder="tu_canal"></span></label>
+          <label>GitHub<span class="pre"><i>github.com/</i><input id="gh" placeholder="tu_usuario"></span></label>
+
+          <div class="actions">
+            <button type="button" class="btn ghost" id="cancelBtn">Cancelar</button>
+            <button type="submit" class="btn">✓ Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>● Módulo de aprendizaje activo</span>
+    <span>© 2025 SQL Explorers Inc. Todos los derechos reservados.</span>
+  </footer>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="js/perfil.js"></script>
+</body>
+</html>
