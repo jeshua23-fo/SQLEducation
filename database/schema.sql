@@ -228,6 +228,11 @@ create index projects_created_at_idx on public.projects (created_at desc);
 create index projects_user_id_idx on public.projects (user_id);
 create index comments_project_created_idx on public.comments (project_id, created_at);
 create index comments_parent_comment_id_idx on public.comments (parent_comment_id);
+create index comments_user_id_idx on public.comments (user_id);
+create index daily_challenges_exercise_id_idx on public.daily_challenges (exercise_id);
+create index exercises_created_by_idx on public.exercises (created_by);
+create index submissions_challenge_user_exercise_idx on public.submissions (daily_challenge_id, user_id, exercise_id);
+create index user_lesson_access_unlocked_by_idx on public.user_lesson_access (unlocked_by);
 
 -- ---------------------------------------------------------------------------
 -- ROW LEVEL SECURITY
@@ -235,7 +240,12 @@ create index comments_parent_comment_id_idx on public.comments (parent_comment_i
 -- still enforce business permissions. These policies also protect direct
 -- Supabase client access. Do not put the service-role key in the frontend.
 -- ---------------------------------------------------------------------------
-create or replace function public.is_admin()
+create schema if not exists private;
+revoke all on schema private from public;
+revoke all on schema private from anon;
+grant usage on schema private to authenticated;
+
+create or replace function private.is_admin()
 returns boolean
 language sql
 stable
@@ -250,8 +260,9 @@ as $$
     );
 $$;
 
-revoke all on function public.is_admin() from public;
-grant execute on function public.is_admin() to authenticated;
+revoke all on function private.is_admin() from public;
+revoke all on function private.is_admin() from anon;
+grant execute on function private.is_admin() to authenticated;
 
 alter table public.users enable row level security;
 alter table public.courses enable row level security;
@@ -269,7 +280,7 @@ alter table public.comments enable row level security;
 -- Profiles: users may see/update their own student profile; only admins can manage roles.
 create policy users_select_self_or_admin on public.users
 for select to authenticated
-using (id = (select auth.uid()) or (select public.is_admin()));
+using (id = (select auth.uid()) or (select private.is_admin()));
 
 create policy users_insert_own_student_profile on public.users
 for insert to authenticated
@@ -282,24 +293,24 @@ with check (id = (select auth.uid()) and role = 'student');
 
 create policy users_admin_all on public.users
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 -- Published courses can be listed. All course management is admin-only.
 create policy courses_select_published on public.courses
 for select to anon, authenticated
-using (is_published or (select public.is_admin()));
+using (is_published or (select private.is_admin()));
 
 create policy courses_admin_all on public.courses
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 -- Students can directly read only lessons that are published and unlocked for them.
 create policy lessons_select_unlocked on public.lessons
 for select to authenticated
 using (
-    (select public.is_admin())
+    (select private.is_admin())
     or (
         is_published
         and exists (
@@ -313,23 +324,23 @@ using (
 
 create policy lessons_admin_all on public.lessons
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 -- Access grants can be read by the student they belong to; only admins manage them.
 create policy lesson_access_select_self_or_admin on public.user_lesson_access
 for select to authenticated
-using (user_id = (select auth.uid()) or (select public.is_admin()));
+using (user_id = (select auth.uid()) or (select private.is_admin()));
 
 create policy lesson_access_admin_all on public.user_lesson_access
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 -- Progress belongs to the student; access must have been granted before progress is created.
 create policy lesson_progress_select_self_or_admin on public.lesson_progress
 for select to authenticated
-using (user_id = (select auth.uid()) or (select public.is_admin()));
+using (user_id = (select auth.uid()) or (select private.is_admin()));
 
 create policy lesson_progress_insert_own_unlocked on public.lesson_progress
 for insert to authenticated
@@ -363,53 +374,53 @@ with check (
 
 create policy lesson_progress_admin_all on public.lesson_progress
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 -- Exercise rows include private evaluation settings, so students cannot query this table directly.
 -- The backend must return only safe exercise fields after checking lesson access.
 create policy exercises_admin_all on public.exercises
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 -- Daily challenge assignments are private to the assigned student and admins.
 create policy daily_challenges_select_self_or_admin on public.daily_challenges
 for select to authenticated
-using (user_id = (select auth.uid()) or (select public.is_admin()));
+using (user_id = (select auth.uid()) or (select private.is_admin()));
 
 create policy daily_challenges_admin_all on public.daily_challenges
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 -- Attempts and scoring are server-controlled; students may only read their own attempts.
 create policy submissions_select_self_or_admin on public.submissions
 for select to authenticated
-using (user_id = (select auth.uid()) or (select public.is_admin()));
+using (user_id = (select auth.uid()) or (select private.is_admin()));
 
 create policy submissions_admin_all on public.submissions
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 create policy streaks_select_self_or_admin on public.streaks
 for select to authenticated
-using (user_id = (select auth.uid()) or (select public.is_admin()));
+using (user_id = (select auth.uid()) or (select private.is_admin()));
 
 create policy streaks_admin_all on public.streaks
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 create policy daily_activity_select_self_or_admin on public.daily_activity
 for select to authenticated
-using (user_id = (select auth.uid()) or (select public.is_admin()));
+using (user_id = (select auth.uid()) or (select private.is_admin()));
 
 create policy daily_activity_admin_all on public.daily_activity
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 -- Projects and comments are public to read; authenticated users can manage their own content.
 create policy projects_public_read on public.projects
@@ -431,8 +442,8 @@ using (user_id = (select auth.uid()));
 
 create policy projects_admin_all on public.projects
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 create policy comments_public_read on public.comments
 for select to anon, authenticated
@@ -453,8 +464,8 @@ using (user_id = (select auth.uid()));
 
 create policy comments_admin_all on public.comments
 for all to authenticated
-using ((select public.is_admin()))
-with check ((select public.is_admin()));
+using ((select private.is_admin()))
+with check ((select private.is_admin()));
 
 -- Explicit grants for the tables intended to be accessed by the browser.
 -- Sensitive learning/evaluation tables are accessed through the Express backend.
